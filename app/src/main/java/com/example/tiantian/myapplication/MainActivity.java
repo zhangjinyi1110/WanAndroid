@@ -19,12 +19,24 @@ import com.example.tiantian.myapplication.data.wxarticle.Chapters;
 import com.example.tiantian.myapplication.databinding.ActivityMainBinding;
 import com.example.tiantian.myapplication.databinding.ChaptersItemBinding;
 import com.example.tiantian.myapplication.flowable.HttpListResultTransformer;
+import com.example.tiantian.myapplication.flowable.HttpResultTransformer;
 import com.example.tiantian.myapplication.utils.HttpSubscriber;
 import com.example.tiantian.myapplication.utils.RetrofitHelper;
+import com.example.tiantian.myapplication.utils.RxLifecyclerUtils;
 import com.example.tiantian.myapplication.utils.SizeUtils;
 
+import org.reactivestreams.Publisher;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.flowables.GroupedFlowable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,10 +67,22 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.recyclerChapters.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerChapters.setAdapter(adapter);
+//        RetrofitHelper.getInstance()
+//                .createService(WXArticleService.class)
+//                .getChapters()
+//                .compose(new HttpListResultTransformer<Chapters>())
+//                .as(RxLifecyclerUtils.<List<Chapters>>bind(this))
+//                .subscribe(new HttpSubscriber<List<Chapters>>() {
+//                    @Override
+//                    public void success(List<Chapters> chapters) {
+//                        adapter.addList(chapters);
+//                    }
+//                });
         RetrofitHelper.getInstance()
                 .createService(WXArticleService.class)
                 .getChapters()
-                .compose(new HttpListResultTransformer<Chapters>())
+                .compose(new HttpResultTransformer<List<Chapters>>())
+                .as(RxLifecyclerUtils.<List<Chapters>>bind(this))
                 .subscribe(new HttpSubscriber<List<Chapters>>() {
                     @Override
                     public void success(List<Chapters> chapters) {

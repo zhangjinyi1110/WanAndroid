@@ -2,15 +2,9 @@ package com.example.tiantian.myapplication.utils;
 
 import android.util.Log;
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
+import io.reactivex.subscribers.ResourceSubscriber;
 
-public abstract class HttpSubscriber<T> implements Subscriber<T> {
-
-    @Override
-    public void onSubscribe(Subscription s) {
-        s.request(Long.MAX_VALUE);
-    }
+public abstract class HttpSubscriber<T> extends ResourceSubscriber<T> {
 
     @Override
     public void onNext(T t) {
@@ -29,7 +23,7 @@ public abstract class HttpSubscriber<T> implements Subscriber<T> {
 
     public abstract void success(T t);
 
-    public void failure(Throwable t){
+    public void failure(Throwable t) {
         Log.e("HttpFailure", "failure: " + t.toString());
     }
 

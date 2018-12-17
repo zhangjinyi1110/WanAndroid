@@ -34,7 +34,7 @@ public class HttpResultTransformer<T> implements FlowableTransformer<HttpResult<
                     @Override
                     public void accept(Subscription subscription) throws Exception {
                         if(activity!=null){
-                            //load show
+                            loadShow();
                         }
                     }
                 })
@@ -42,7 +42,7 @@ public class HttpResultTransformer<T> implements FlowableTransformer<HttpResult<
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if(activity!=null){
-                            //load dismiss
+                            loadDismiss();
                         }
                     }
                 })
@@ -50,7 +50,7 @@ public class HttpResultTransformer<T> implements FlowableTransformer<HttpResult<
                     @Override
                     public void run() throws Exception {
                         if(activity!=null){
-                            //load dismiss
+                            loadDismiss();
                         }
                     }
                 })
@@ -58,9 +58,17 @@ public class HttpResultTransformer<T> implements FlowableTransformer<HttpResult<
                     @Override
                     public void run() throws Exception {
                         if(activity!=null){
-                            //load dismiss
+                            loadDismiss();
                         }
                     }
                 });
+    }
+
+    private void loadDismiss() {
+
+    }
+
+    private void loadShow() {
+
     }
 }

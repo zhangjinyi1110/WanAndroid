@@ -18,6 +18,9 @@ import com.example.tiantian.myapplication.databinding.ArticleItemBinding;
 import com.example.tiantian.myapplication.flowable.HttpResultTransformer;
 import com.example.tiantian.myapplication.utils.HttpSubscriber;
 import com.example.tiantian.myapplication.utils.RetrofitHelper;
+import com.example.tiantian.myapplication.utils.RxLifecyclerUtils;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -59,17 +62,18 @@ public class SecondActivity extends AppCompatActivity {
         getData();
     }
 
-    private void getData(){
+    private void getData() {
         RetrofitHelper.getInstance()
                 .createService(WXArticleService.class)
                 .getArticle(id, page)
                 .compose(new HttpResultTransformer<Article>())
+                .as(RxLifecyclerUtils.<Article>bind(this))
                 .subscribe(new HttpSubscriber<Article>() {
                     @Override
                     public void success(Article article) {
                         page++;
                         adapter.addList(article.getDatas());
-                        if(article.getDatas().size() + article.getOffset() == article.getTotal()) {
+                        if (article.getDatas().size() + article.getOffset() == article.getTotal()) {
                             adapter.setShowFooter(false);
                         }
                     }
