@@ -24,6 +24,7 @@ public class WebViewActivity extends BaseActivity<ActivityWebViewBinding, BaseVi
     @Override
     protected void initToolbar(ActionBar actionBar) {
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(getIntent().getStringExtra("title"));
     }
 
     @Override

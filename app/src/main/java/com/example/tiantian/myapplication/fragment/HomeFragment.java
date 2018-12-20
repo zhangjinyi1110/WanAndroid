@@ -106,19 +106,24 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, MainViewMode
             @Override
             public void OnBannerClick(int position) {
                 startActivity(new Intent(getSelfActivity(), WebViewActivity.class)
-                        .putExtra("url", bannerList.get(position).getUrl()));
+                        .putExtra("url", bannerList.get(position).getUrl())
+                .putExtra("title", bannerList.get(position).getTitle()));
             }
         });
         adapter.setItemClickListener(new SimpleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ViewDataBinding binding, int position) {
-                startActivity(new Intent(getSelfActivity(), WebViewActivity.class).putExtra("url", adapter.getItemData(position).getLink()));
+                startActivity(new Intent(getSelfActivity(), WebViewActivity.class)
+                        .putExtra("url", adapter.getItemData(position).getLink())
+                .putExtra("title", adapter.getItemData(position).getName()));
             }
         });
         articleAdapter.setItemClickListener(new SimpleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ViewDataBinding binding, int position) {
-                startActivity(new Intent(getSelfActivity(), WebViewActivity.class).putExtra("url", adapter.getItemData(position).getLink()));
+                startActivity(new Intent(getSelfActivity(), WebViewActivity.class)
+                        .putExtra("url", articleAdapter.getItemData(position).getLink())
+                        .putExtra("title", articleAdapter.getItemData(position).getTitle()));
             }
         });
         binding.homeArticleMore.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +131,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, MainViewMode
             public void onClick(View v) {
                 startActivity(new Intent(getSelfActivity(), ArticleListActivity.class)
                         .putExtra("page", page++)
-                        .putExtra("type", ArticleListActivity.TYPE_HOME));
+                        .putExtra("type", ArticleListActivity.TYPE_HOME)
+                        .putExtra("title", "更多文章"));
             }
         });
     }

@@ -36,7 +36,7 @@ public class ChaptersActivity extends BaseActivity<ActivityChaptersBinding, Chap
         viewModel.getChapterList().observe(this, new Observer<List<Chapters>>() {
             @Override
             public void onChanged(@Nullable List<Chapters> chapters) {
-                if(chapters!=null) {
+                if (chapters != null) {
                     adapter.addList(chapters);
                 }
             }
@@ -51,6 +51,7 @@ public class ChaptersActivity extends BaseActivity<ActivityChaptersBinding, Chap
     @Override
     protected void initToolbar(ActionBar actionBar) {
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("公众号列表");
     }
 
     @Override
@@ -77,7 +78,9 @@ public class ChaptersActivity extends BaseActivity<ActivityChaptersBinding, Chap
         adapter.setItemClickListener(new SimpleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ViewDataBinding binding, int position) {
-                startActivity(new Intent(getApplicationContext(), ArticleListActivity.class).putExtra("id", adapter.getItemData(position).getId()));
+                startActivity(new Intent(getApplicationContext(), ArticleListActivity.class)
+                        .putExtra("id", adapter.getItemData(position).getId())
+                        .putExtra("title", adapter.getItemData(position).getName()));
             }
         });
     }

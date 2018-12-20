@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +29,17 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     @Override
+    protected Toolbar getToolbar() {
+        return binding.mainToolbar;
+    }
+
+    @Override
+    protected void initToolbar(ActionBar actionBar) {
+        actionBar.setTitle("首页");
+    }
+
+    @Override
     public void initView(Bundle savedInstanceState) {
-        setSupportActionBar(binding.mainToolbar);
         binding.mainNavigation.setItemTextColor(getResources().getColorStateList(R.color.navigation_text_color));
         ImageView header = new ImageView(this);
         header.setImageResource(R.drawable.ic_navigation_bg);

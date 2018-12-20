@@ -31,6 +31,7 @@ public class ArticleActivity extends BaseActivity<ActivityArticleBinding, BaseVi
     @Override
     protected void initToolbar(ActionBar actionBar) {
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(getIntent().getStringExtra("title"));
     }
 
     @SuppressLint("SetJavaScriptEnabled")

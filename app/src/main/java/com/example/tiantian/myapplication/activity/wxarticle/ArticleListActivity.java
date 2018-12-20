@@ -42,6 +42,7 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
     @Override
     protected void initToolbar(ActionBar actionBar) {
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(getIntent().getStringExtra("title"));
     }
 
     @Override
@@ -70,7 +71,9 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
         adapter.setItemClickListener(new SimpleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ViewDataBinding binding, int position) {
-                startActivity(new Intent(getApplicationContext(), ArticleActivity.class).putExtra("url", adapter.getItemData(position).getLink()));
+                startActivity(new Intent(getApplicationContext(), ArticleActivity.class)
+                        .putExtra("url", adapter.getItemData(position).getLink())
+                        .putExtra("title", adapter.getItemData(position).getTitle()));
             }
         });
         adapter.setLoadMoreListener(new SimpleAdapter.OnLoadMoreListener() {
