@@ -16,6 +16,9 @@ public interface WXArticleService {
     Flowable<HttpResult<List<Chapters>>> getChapters();
 
     @GET("wxarticle/list/{id}/{page}/json")
-    Flowable<HttpResult<Article>> getArticle(@Path("id") int id, @Path("page") int page);
+    Flowable<HttpResult<Article>> getArticle(@Path("id") String id, @Path("page") int page);
+
+    @GET("article/list/{page}/json")
+    Flowable<HttpResult<Article>> getHomeArticle(@Path("page") int page);
 
 }

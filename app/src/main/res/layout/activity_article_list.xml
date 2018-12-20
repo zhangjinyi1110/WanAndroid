@@ -6,15 +6,19 @@
 
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ThirdActivity">
+        android:orientation="vertical"
+        tools:context=".activity.wxarticle.ArticleListActivity">
 
-        <com.example.tiantian.myapplication.widget.ProgressWebView
+        <include layout="@layout/toolbar"
+            android:id="@+id/toolbar"/>
+
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/web_view"/>
+            android:id="@+id/recycler_article"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </layout>

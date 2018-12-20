@@ -7,6 +7,12 @@ import io.reactivex.subscribers.ResourceSubscriber;
 public abstract class HttpSubscriber<T> extends ResourceSubscriber<T> {
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        add(this);
+    }
+
+    @Override
     public void onNext(T t) {
         success(t);
     }
