@@ -1,13 +1,18 @@
 package com.example.tiantian.myapplication.widget;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.tiantian.myapplication.R;
@@ -21,81 +26,88 @@ public class PageView extends FrameLayout {
         CONTENT,
     }
 
-    private Context context;
-    private View errorView;
-    private View loadView;
-    private View emptyView;
-    private View contentView;
-    private OnPageStateChangeListener pageStateChangeListener;
+    private View content;
+    private View error;
+    private View empty;
+    private View load;
     private State state;
+    private OnPageStateChangeListener pageStateChangeListener;
 
-    private PageView(Context context, View errorView, View loadView, View emptyView, View contentView, OnPageStateChangeListener pageStateChangeLinstener) {
+    private PageView(@NonNull Context context) {
         super(context);
-        this.errorView = errorView;
-        this.loadView = loadView;
-        this.emptyView = emptyView;
-        this.contentView = contentView;
-        this.pageStateChangeListener = pageStateChangeLinstener;
-        init();
-    }
-
-    private void init() {
-        if (emptyView != null) {
-            addView(emptyView);
-        }
-        if (errorView != null) {
-            addView(errorView);
-        }
-        if (loadView != null) {
-            addView(loadView);
-        }
-        addView(contentView);
-        setState(loadView != null ? State.LOAD : State.CONTENT);
     }
 
     public void setState(State state) {
         this.state = state;
+        changeState(state);
+    }
+
+    public void showContent() {
+        setState(State.CONTENT);
+    }
+
+    public void showError() {
+        setState(State.ERROR);
+    }
+
+    public void showEmpty() {
+        setState(State.EMPTY);
+    }
+
+    public void showLoad() {
+        setState(State.LOAD);
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    private void changeState(State state) {
         View curr;
+        State currState;
         switch (state) {
             case LOAD:
-                if (loadView == null) {
-                    curr = contentView;
-                    this.state = State.CONTENT;
+                if (load != null) {
+                    curr = load;
+                    currState = state;
                 } else {
-                    curr = loadView;
+                    curr = content;
+                    currState = State.CONTENT;
                 }
                 break;
             case EMPTY:
-                if (emptyView == null) {
-                    curr = contentView;
-                    this.state = State.CONTENT;
+                if (empty != null) {
+                    curr = empty;
+                    currState = state;
                 } else {
-                    curr = emptyView;
+                    curr = content;
+                    currState = State.CONTENT;
                 }
                 break;
             case ERROR:
-                if (loadView == null) {
-                    curr = contentView;
-                    this.state = State.CONTENT;
+                if (error != null) {
+                    curr = error;
+                    currState = state;
                 } else {
-                    curr = errorView;
+                    curr = content;
+                    currState = State.CONTENT;
                 }
                 break;
             default:
-                curr = contentView;
-                this.state = State.CONTENT;
+                curr = content;
+                currState = state;
                 break;
         }
         changeView(curr);
         if (pageStateChangeListener != null) {
-            pageStateChangeListener.onPageStateChangeListener(curr, this.state);
+            pageStateChangeListener.onChangeListener(curr, currState);
         }
     }
 
     private void changeView(View curr) {
         for (int i = 0; i < getChildCount(); i++) {
             View view = getChildAt(i);
-            if (view == curr) {
+            if (curr == view) {
                 view.setVisibility(VISIBLE);
             } else {
                 view.setVisibility(GONE);
@@ -103,47 +115,152 @@ public class PageView extends FrameLayout {
         }
     }
 
-    public State getState() {
-        return state;
-    }
-
     public static class Builder {
 
         private Context context;
-        private View errorView;
-        private View loadView;
-        private View emptyView;
-        private View contentView;
-        private OnPageStateChangeListener pageStateChangeListener;
+        private PageView pageView;
         private boolean isDefault = true;
 
-        public Builder(Fragment context) {
-            this.context = context.getContext();
+        public Builder(Context context) {
+            this.context = context;
+            pageView = new PageView(this.context);
+        }
 
+        public Builder setEmpty(View empty) {
+            pageView.empty = empty;
+            return this;
         }
 
         public Builder setError(View error) {
-            this.errorView = error;
+            pageView.error = error;
             return this;
         }
 
         public Builder setLoad(View load) {
-            this.loadView = load;
+            pageView.load = load;
             return this;
         }
 
-        public Builder setEmpty(View empty) {
-            this.emptyView = empty;
-            return this;
+        public PageView create(Object object) {
+            if (object instanceof Activity) {
+                return create((Activity) object);
+            } else if (object instanceof Fragment) {
+                return create((Fragment) object);
+            } else if (object instanceof View) {
+                if (((View) object).getParent() instanceof ViewGroup)
+                    return create((ViewGroup) ((View) object).getParent(), (View) object);
+                else
+                    throw new NullPointerException();
+            } else {
+                throw new NullPointerException("");
+            }
         }
 
-        private void setContent(View content) {
-            this.contentView = content;
-//            return this;
+        private PageView create(ViewGroup viewGroup, View view) {
+            int count = viewGroup.getChildCount();
+            int index = 0;
+            for (int i = 0; i < count; i++) {
+                View v = viewGroup.getChildAt(i);
+                if (v == view) {
+                    index = i;
+                }
+            }
+            setContent(viewGroup, view, index);
+            return pageView;
         }
 
-        public Builder setPageStateChangeLinstener(OnPageStateChangeListener pageStateChangeListener) {
-            this.pageStateChangeListener = pageStateChangeListener;
+        private PageView create(Fragment fragment) {
+            ViewGroup content = (ViewGroup) fragment.getView().getParent();
+            create(content, fragment.getView());
+            return pageView;
+        }
+
+        private PageView create(Activity activity) {
+            ViewGroup content = activity.findViewById(android.R.id.content);
+            View view = content.getChildAt(0);
+            int index = 0;
+            if (view instanceof ViewGroup) {
+                content = (ViewGroup) view;
+                view = content.getChildAt(1);
+                index = 1;
+            }
+            setContent(content, view, index);
+            return pageView;
+        }
+
+        private void setContent(ViewGroup content, @Nullable View view, int index) {
+            if (view == null) {
+                view = content;
+            }
+            pageView.content = view;
+            pageView.removeAllViews();
+            content.removeView(view);
+            content.addView(pageView, index, view.getLayoutParams());
+            initPage();
+            pageView.setState(State.LOAD);
+        }
+
+        private void initPage() {
+            if (isDefault) {
+                if (pageView.empty == null) {
+                    LinearLayout linearLayout = new LinearLayout(context);
+                    linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    linearLayout.setGravity(Gravity.CENTER);
+                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    ImageView imageView = new ImageView(context);
+                    imageView.setImageResource(R.drawable.ic_launcher_background);
+                    linearLayout.addView(imageView);
+                    TextView textView = new TextView(context);
+                    textView.setText("没有数据");
+                    textView.setGravity(Gravity.CENTER);
+                    textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
+                    linearLayout.addView(textView);
+                    setEmpty(linearLayout);
+                }
+                if (pageView.error == null) {
+                    LinearLayout linearLayout = new LinearLayout(context);
+                    linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    linearLayout.setGravity(Gravity.CENTER);
+                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    ImageView imageView = new ImageView(context);
+                    imageView.setImageResource(R.drawable.ic_launcher_background);
+                    linearLayout.addView(imageView);
+                    TextView textView = new TextView(context);
+                    textView.setText("错误页面");
+                    textView.setGravity(Gravity.CENTER);
+                    textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
+                    linearLayout.addView(textView);
+                    setError(linearLayout);
+                }
+                if (pageView.load == null) {
+                    LinearLayout linearLayout = new LinearLayout(context);
+                    linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    linearLayout.setGravity(Gravity.CENTER);
+                    linearLayout.setOrientation(LinearLayout.VERTICAL);
+                    ProgressBar progressBar = new ProgressBar(context);
+                    linearLayout.addView(progressBar);
+                    TextView textView = new TextView(context);
+                    textView.setText("正在加载...");
+                    textView.setGravity(Gravity.CENTER);
+                    textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
+                    linearLayout.addView(textView);
+                    setLoad(linearLayout);
+                }
+            }
+            pageView.addView(pageView.content);
+            if (pageView.error != null) {
+                pageView.addView(pageView.error);
+            }
+            if (pageView.empty != null) {
+                pageView.addView(pageView.empty);
+            }
+            if (pageView.load != null) {
+                pageView.addView(pageView.load);
+            }
+        }
+
+        public Builder setPageStateChangeListener(OnPageStateChangeListener pageStateChangeListener) {
+            pageView.pageStateChangeListener = pageStateChangeListener;
             return this;
         }
 
@@ -151,61 +268,10 @@ public class PageView extends FrameLayout {
             isDefault = aDefault;
             return this;
         }
-
-        public PageView build(View content) {
-            setContent(content);
-            if (isDefault) {
-                initDefault();
-            }
-            return new PageView(context, errorView, loadView, emptyView, contentView, pageStateChangeListener);
-        }
-
-        private void initDefault() {
-            if (errorView == null) {
-                errorView = new LinearLayout(context);
-                errorView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                ((LinearLayout) errorView).setOrientation(LinearLayout.VERTICAL);
-                ((LinearLayout) errorView).setGravity(Gravity.CENTER);
-                ImageView imageView = new ImageView(context);
-                imageView.setImageResource(R.drawable.ic_launcher_background);
-                TextView textView = new TextView(context);
-                textView.setText("加载失败");
-                textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
-                ((LinearLayout) errorView).addView(imageView);
-                ((LinearLayout) errorView).addView(textView);
-            }
-            if (emptyView == null) {
-                emptyView = new LinearLayout(context);
-                emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                ((LinearLayout) emptyView).setOrientation(LinearLayout.VERTICAL);
-                ((LinearLayout) emptyView).setGravity(Gravity.CENTER);
-                ImageView imageView = new ImageView(context);
-                imageView.setImageResource(R.drawable.ic_launcher_background);
-                TextView textView = new TextView(context);
-                textView.setText("暂无数据");
-                textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
-                ((LinearLayout) emptyView).addView(imageView);
-                ((LinearLayout) emptyView).addView(textView);
-            }
-            if (loadView == null) {
-                loadView = new LinearLayout(context);
-                loadView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                ((LinearLayout) loadView).setOrientation(LinearLayout.VERTICAL);
-                ((LinearLayout) loadView).setGravity(Gravity.CENTER);
-                ImageView imageView = new ImageView(context);
-                imageView.setImageResource(R.drawable.ic_launcher_background);
-                TextView textView = new TextView(context);
-                textView.setText("数据加载中...");
-                textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
-                ((LinearLayout) loadView).addView(imageView);
-                ((LinearLayout) loadView).addView(textView);
-            }
-        }
-
     }
 
     public interface OnPageStateChangeListener {
-        void onPageStateChangeListener(View view, State state);
+        void onChangeListener(View view, State state);
     }
 
 }

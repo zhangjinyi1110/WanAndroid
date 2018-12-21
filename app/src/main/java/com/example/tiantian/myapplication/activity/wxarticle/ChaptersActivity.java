@@ -18,6 +18,7 @@ import com.example.tiantian.myapplication.data.wxarticle.Chapters;
 import com.example.tiantian.myapplication.databinding.ActivityChaptersBinding;
 import com.example.tiantian.myapplication.databinding.ChaptersItemBinding;
 import com.example.tiantian.myapplication.viewmodel.wxarticle.ChapterViewModel;
+import com.example.tiantian.myapplication.widget.PageView;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class ChaptersActivity extends BaseActivity<ActivityChaptersBinding, Chap
             public void onChanged(@Nullable List<Chapters> chapters) {
                 if (chapters != null) {
                     adapter.addList(chapters);
+                    pageView.setState(PageView.State.CONTENT);
                 }
             }
         });
@@ -52,6 +54,11 @@ public class ChaptersActivity extends BaseActivity<ActivityChaptersBinding, Chap
     protected void initToolbar(ActionBar actionBar) {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("公众号列表");
+    }
+
+    @Override
+    protected PageView getPageView() {
+        return new PageView.Builder(this).create(this);
     }
 
     @Override

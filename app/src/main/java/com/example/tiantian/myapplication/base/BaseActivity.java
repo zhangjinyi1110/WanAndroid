@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.tiantian.myapplication.utils.ActivityManager;
+import com.example.tiantian.myapplication.widget.PageView;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -21,6 +22,8 @@ public abstract class BaseActivity<B extends ViewDataBinding, VM extends BaseVie
     protected B binding;
     protected VM viewModel;
     protected Fragment currFragment;
+    protected PageView pageView;
+    public final String TAG = getClass().getSimpleName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,9 +37,14 @@ public abstract class BaseActivity<B extends ViewDataBinding, VM extends BaseVie
                 initToolbar(getSupportActionBar());
             }
         }
+        pageView = getPageView();
         initView(savedInstanceState);
         initEvent();
         initData();
+    }
+
+    protected PageView getPageView() {
+        return null;
     }
 
     protected void initToolbar(ActionBar actionBar) {

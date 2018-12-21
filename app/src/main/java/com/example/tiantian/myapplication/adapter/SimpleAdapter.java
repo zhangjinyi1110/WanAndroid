@@ -116,6 +116,10 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
         notifyItemRangeInserted(getItemCount() - 1, list.size());
     }
 
+    public List<T> getList() {
+        return list;
+    }
+
     public void setShowFooter(boolean showFooter) {
         this.showFooter = showFooter;
         if (showFooter && footerView == null) {

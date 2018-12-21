@@ -31,6 +31,7 @@ import com.example.tiantian.myapplication.databinding.FragmentHomeBinding;
 import com.example.tiantian.myapplication.utils.GlideImageLoader;
 import com.example.tiantian.myapplication.utils.SizeUtils;
 import com.example.tiantian.myapplication.viewmodel.main.MainViewModel;
+import com.example.tiantian.myapplication.widget.PageView;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 
@@ -107,7 +108,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, MainViewMode
             public void OnBannerClick(int position) {
                 startActivity(new Intent(getSelfActivity(), WebViewActivity.class)
                         .putExtra("url", bannerList.get(position).getUrl())
-                .putExtra("title", bannerList.get(position).getTitle()));
+                        .putExtra("title", bannerList.get(position).getTitle()));
             }
         });
         adapter.setItemClickListener(new SimpleAdapter.OnItemClickListener() {
@@ -115,7 +116,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, MainViewMode
             public void onItemClick(ViewDataBinding binding, int position) {
                 startActivity(new Intent(getSelfActivity(), WebViewActivity.class)
                         .putExtra("url", adapter.getItemData(position).getLink())
-                .putExtra("title", adapter.getItemData(position).getName()));
+                        .putExtra("title", adapter.getItemData(position).getName()));
             }
         });
         articleAdapter.setItemClickListener(new SimpleAdapter.OnItemClickListener() {
@@ -142,7 +143,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, MainViewMode
         viewModel.getBannerList().observe(this, new Observer<List<BannerData>>() {
             @Override
             public void onChanged(@Nullable List<BannerData> bannerData) {
-                Log.d(TAG, "onChanged: " + (bannerData == null));
                 if (bannerData != null) {
                     if (bannerData.size() == 0) {
                         binding.mainBanner.setVisibility(View.GONE);
@@ -158,6 +158,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, MainViewMode
                     binding.mainBanner.setImages(imagePath);
                     binding.mainBanner.setBannerTitles(titles);
                     binding.mainBanner.start();
+                    checkSuccess();
                 }
             }
         });
@@ -167,18 +168,37 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, MainViewMode
                 if (commonWebs != null) {
                     adapter.addList(commonWebs);
                     adapter.setShowFooter(false);
+                    checkSuccess();
                 }
             }
         });
         viewModel.getHomeArticle(page).observe(this, new Observer<Article>() {
             @Override
             public void onChanged(@Nullable Article article) {
-                if(article!=null){
+                if (article != null) {
                     articleAdapter.setShowFooter(false);
                     articleAdapter.addList(article.getDatas());
+                    checkSuccess();
                 }
             }
         });
     }
 
+    private void checkSuccess() {
+        if (articleAdapter.getList() != null && adapter.getList() != null && bannerList != null) {
+            pageView.setState(PageView.State.CONTENT);
+        }
+    }
+
+    @Override
+    protected PageView getPageView() {
+        return new PageView.Builder(getSelfActivity())
+                .setPageStateChangeListener(new PageView.OnPageStateChangeListener() {
+                    @Override
+                    public void onChangeListener(View view, PageView.State state) {
+                        Log.d(TAG, "onPageStateChangeListener: " + state);
+                    }
+                })
+                .create(this);
+    }
 }

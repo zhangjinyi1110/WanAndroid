@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.tiantian.myapplication.widget.PageView;
+
 import java.lang.reflect.ParameterizedType;
 
 public abstract class BaseFragment<B extends ViewDataBinding, VM extends BaseViewModel> extends Fragment implements BaseInitListener {
@@ -22,6 +24,7 @@ public abstract class BaseFragment<B extends ViewDataBinding, VM extends BaseVie
     private boolean isLasy = true;
     protected B binding;
     protected VM viewModel;
+    protected PageView pageView;
     public final String TAG = getClass().getSimpleName();
 
     @Override
@@ -44,6 +47,16 @@ public abstract class BaseFragment<B extends ViewDataBinding, VM extends BaseVie
         initEvent();
         initData();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        pageView = getPageView();
+    }
+
+    protected PageView getPageView() {
+        return null;
     }
 
     @SuppressWarnings("unchecked")

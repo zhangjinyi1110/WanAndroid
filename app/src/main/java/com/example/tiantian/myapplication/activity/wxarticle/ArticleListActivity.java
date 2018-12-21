@@ -19,6 +19,7 @@ import com.example.tiantian.myapplication.data.wxarticle.ArticleData;
 import com.example.tiantian.myapplication.databinding.ActivityArticleListBinding;
 import com.example.tiantian.myapplication.databinding.ArticleItemBinding;
 import com.example.tiantian.myapplication.viewmodel.wxarticle.ArticleListViewModel;
+import com.example.tiantian.myapplication.widget.PageView;
 
 public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding, ArticleListViewModel> {
 
@@ -43,6 +44,11 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
     protected void initToolbar(ActionBar actionBar) {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getIntent().getStringExtra("title"));
+    }
+
+    @Override
+    protected PageView getPageView() {
+        return new PageView.Builder(this).create(this);
     }
 
     @Override
@@ -108,6 +114,7 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
                 }
                 page++;
                 adapter.addList(article.getDatas());
+                pageView.setState(PageView.State.CONTENT);
             }
         }
     };
