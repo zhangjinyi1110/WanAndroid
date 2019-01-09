@@ -7,7 +7,8 @@ import com.example.tiantian.myapplication.utils.RetrofitHelper;
 
 public class BaseRepository {
 
-    private Context context;
+    protected Context context;
+    protected final String TAG = getClass().getSimpleName();
 
     public void with(Context context) {
         this.context = context;

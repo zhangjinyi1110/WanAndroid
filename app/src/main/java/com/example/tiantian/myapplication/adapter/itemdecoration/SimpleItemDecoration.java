@@ -42,7 +42,7 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         if (parent.getChildLayoutPosition(view) == Objects.requireNonNull(parent.getAdapter()).getItemCount() - 1
-                && ((SimpleAdapter) parent.getAdapter()).isShowFooter()) {
+                && ((SimpleAdapter) parent.getAdapter()).isShowLoadEnable()) {
             return;
         }
         outRect.left = getSize(left);

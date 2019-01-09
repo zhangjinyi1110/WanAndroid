@@ -1,11 +1,11 @@
 package com.example.tiantian.myapplication.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.example.tiantian.myapplication.R;
 import com.example.tiantian.myapplication.utils.SizeUtils;
@@ -24,12 +23,16 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
 
     private List<T> list;
     private Context context;
+    private View loadView;
     private View footerView;
-    private boolean showFooter;
-    public final int TYPE_FOOTER = 0x02;
+    private boolean showFooterEnable;
+    private boolean showLoadEnable;
+    public final int TYPE_LOAD = 0x02;
+    public final int TYPE_FOOTER = 0x03;
     public final int TYPE_CONTENT = 0x01;
     private OnItemClickListener itemClickListener;
     private OnLoadMoreListener loadMoreListener;
+    private RecyclerView recyclerView;
 
     public SimpleAdapter(Context context) {
         this(null, context);
@@ -38,13 +41,21 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
     public SimpleAdapter(List<T> list, Context context) {
         this.list = list;
         this.context = context;
-        setShowFooter(true);
+        setShowLoadEnable(true);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        if (i == TYPE_FOOTER)
+        if (i == TYPE_LOAD)
+            return new ViewHolder(loadView);
+        else if (i == TYPE_FOOTER)
             return new ViewHolder(footerView);
         return new ViewHolder(DataBindingUtil.inflate(LayoutInflater.from(context), getLayoutId(i), viewGroup, false));
     }
@@ -63,11 +74,12 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(@NonNull final SimpleAdapter.ViewHolder viewHolder, int i) {
-        if (showFooter && getItemViewType(i) == TYPE_FOOTER) {
+        if (showLoadEnable && getItemViewType(i) == TYPE_LOAD) {
             if (loadMoreListener != null) {
-                Log.d("SimpleAdapter", "onBindViewHolder: footer");
                 loadMoreListener.onLoadMore();
             }
+            return;
+        } else if (showFooterEnable && getItemViewType(i) == TYPE_FOOTER) {
             return;
         }
         viewHolder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -84,7 +96,7 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
     protected abstract void convert(B binding, T t, int position);
 
     protected void convert(B binding, T t, int position, List<Object> payloads) {
-        if (showFooter && getItemViewType(position) == TYPE_FOOTER) {
+        if (showLoadEnable && getItemViewType(position) == TYPE_LOAD) {
             return;
         }
         convert(binding, t, position);
@@ -93,13 +105,13 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
     @Override
     public int getItemCount() {
         int count = list == null ? 0 : list.size();
-        count += showFooter ? 1 : 0;
+        count += showLoadEnable || showFooterEnable ? 1 : 0;
         return count;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return showFooter && position == getItemCount() - 1 ? TYPE_FOOTER : TYPE_CONTENT;
+        return (showLoadEnable || showFooterEnable) && position == getItemCount() - 1 ? showLoadEnable ? TYPE_LOAD : TYPE_FOOTER : TYPE_CONTENT;
     }
 
     public void setList(List<T> list) {
@@ -107,7 +119,8 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
         notifyDataSetChanged();
     }
 
-    public void addList(List<T> list) {
+    @SuppressLint("CheckResult")
+    public void addList(final List<T> list) {
         if (this.list == null) {
             setList(list);
             return;
@@ -120,19 +133,33 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
         return list;
     }
 
-    public void setShowFooter(boolean showFooter) {
-        this.showFooter = showFooter;
-        if (showFooter && footerView == null) {
-            initLoadFooterView();
+    public void setShowLoadEnable(boolean showLoadEnable) {
+        this.showLoadEnable = showLoadEnable;
+        if (showLoadEnable && loadView == null) {
+            initLoadView();
         }
-    }
-
-    public boolean isShowFooter() {
-        return showFooter;
     }
 
     public void setFooterView(View footerView) {
         this.footerView = footerView;
+    }
+
+    public void setShowFooterEnable(boolean showFooterEnable) {
+        this.showFooterEnable = showFooterEnable;
+        if(showFooterEnable && footerView==null)
+            initFooterView();
+    }
+
+    public boolean isShowFooterEnable() {
+        return showFooterEnable;
+    }
+
+    public boolean isShowLoadEnable() {
+        return showLoadEnable;
+    }
+
+    public void setLoadView(View loadView) {
+        this.loadView = loadView;
     }
 
     public void setItemClickListener(OnItemClickListener itemClickListener) {
@@ -140,11 +167,25 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
     }
 
     public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
-        Log.d("SimpleAdapter", "setLoadMoreListener: ");
         this.loadMoreListener = loadMoreListener;
     }
 
-    private void initLoadFooterView() {
+    private void initFooterView() {
+        LinearLayout linearLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(layoutParams);
+        int paddingSize = SizeUtils.dp2px(context, 10);
+        linearLayout.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+        linearLayout.setGravity(Gravity.CENTER);
+        TextView textView = new TextView(context);
+        textView.setText("-------已经到底了-------");
+        textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
+        textView.setTextSize(15);
+        linearLayout.addView(textView);
+        footerView = linearLayout;
+    }
+
+    private void initLoadView() {
         LinearLayout linearLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.setLayoutParams(layoutParams);
@@ -161,7 +202,7 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
         textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
         textView.setTextSize(15);
         linearLayout.addView(textView);
-        footerView = linearLayout;
+        loadView = linearLayout;
     }
 
     public T getItemData(int position) {
@@ -169,6 +210,11 @@ public abstract class SimpleAdapter<T, B extends ViewDataBinding> extends Recycl
             throw new ArrayIndexOutOfBoundsException("this list count is " + list.size() + ", the position is " + position + ".");
         }
         return list.get(position);
+    }
+
+    @SuppressWarnings("unchecked")
+    public B getItemBinding(ViewDataBinding binding) {
+        return (B) binding;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

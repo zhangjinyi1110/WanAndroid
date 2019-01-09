@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.example.tiantian.myapplication.R;
+import com.example.tiantian.myapplication.activity.webview.WebViewActivity;
 import com.example.tiantian.myapplication.adapter.SimpleAdapter;
 import com.example.tiantian.myapplication.adapter.itemdecoration.SimpleItemDecoration;
 import com.example.tiantian.myapplication.base.BaseActivity;
@@ -69,7 +70,7 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
             }
         };
         binding.recyclerArticle.setAdapter(adapter);
-        adapter.setShowFooter(false);
+        adapter.setShowLoadEnable(false);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
         adapter.setItemClickListener(new SimpleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ViewDataBinding binding, int position) {
-                startActivity(new Intent(getApplicationContext(), ArticleActivity.class)
+                startActivity(new Intent(getApplicationContext(), WebViewActivity.class)
                         .putExtra("url", adapter.getItemData(position).getLink())
                         .putExtra("title", adapter.getItemData(position).getTitle()));
             }
@@ -108,9 +109,9 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
             if (article != null) {
                 Log.d("page", "onChanged: " + article.getCurPage() + "/" + article.getPageCount());
                 if (article.getPageCount() == article.getCurPage()) {
-                    adapter.setShowFooter(false);
+                    adapter.setShowLoadEnable(false);
                 } else {
-                    adapter.setShowFooter(true);
+                    adapter.setShowLoadEnable(true);
                 }
                 page++;
                 adapter.addList(article.getDatas());

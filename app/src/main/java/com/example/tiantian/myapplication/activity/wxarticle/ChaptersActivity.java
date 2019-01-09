@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 
 import com.example.tiantian.myapplication.R;
 import com.example.tiantian.myapplication.adapter.SimpleAdapter;
@@ -75,7 +74,7 @@ public class ChaptersActivity extends BaseActivity<ActivityChaptersBinding, Chap
                 binding.setChapter(chapters);
             }
         };
-        adapter.setShowFooter(false);
+        adapter.setShowLoadEnable(false);
         binding.recyclerChapters.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerChapters.setAdapter(adapter);
     }

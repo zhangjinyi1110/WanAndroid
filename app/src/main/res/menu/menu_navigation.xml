@@ -4,6 +4,9 @@
     <group >
         <item android:id="@+id/navigation_chapters"
             android:title="公众号"/>
-    </group>
+
+        <item android:id="@+id/navigation_album"
+            android:title="相册"/>
+   </group>
 
 </menu>

@@ -1,6 +1,7 @@
 package com.example.tiantian.myapplication.flowable;
 
 import android.app.Activity;
+import android.widget.Toast;
 
 import com.example.tiantian.myapplication.data.HttpResult;
 
@@ -43,6 +44,7 @@ public class HttpResultTransformer<T> implements FlowableTransformer<HttpResult<
                     public void accept(Throwable throwable) throws Exception {
                         if(activity!=null){
                             loadDismiss();
+                            Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })

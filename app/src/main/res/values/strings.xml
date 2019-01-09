@@ -3,4 +3,8 @@
     <string name="text_common_web">常用网站</string>
     <string name="text_home_article">首页文章</string>
     <string name="text_more">更多>></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_new">新</string>
 </resources>
