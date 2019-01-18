@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group >
-        <item android:id="@+id/navigation_chapters"
-            android:title="公众号"/>
+    <group>
+        <item
+            android:id="@+id/navigation_collect"
+            android:title="收藏"
+            android:icon="@drawable/ic_favorite_gray_18dp"/>
 
-        <item android:id="@+id/navigation_album"
-            android:title="相册"/>
-   </group>
+        <item
+            android:id="@+id/navigation_settings"
+            android:title="设置"
+            android:icon="@drawable/ic_settings_gray_18dp"/>
+
+        <item
+            android:id="@+id/navigation_light"
+            android:title="夜间模式"
+            android:icon="@drawable/ic_lightbulb_outline_gray_18dp"/>
+
+        <item
+            android:id="@+id/navigation_about_me"
+            android:title="关于我们"
+            android:icon="@drawable/ic_supervisor_account_gray_18dp" />
+
+        <item
+            android:id="@+id/navigation_chapters"
+            android:title="公众号"
+            android:visible="false"/>
+
+        <item
+            android:id="@+id/navigation_album"
+            android:title="相册"
+            android:visible="false"/>
+    </group>
 
 </menu>

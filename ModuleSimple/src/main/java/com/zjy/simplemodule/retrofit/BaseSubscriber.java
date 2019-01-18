@@ -37,6 +37,7 @@ public abstract class BaseSubscriber<T> implements Subscriber<T> {
 
     @Override
     public void onNext(T t) {
+        Log.e(getClass().getSimpleName(), "onNext: ");
         onSuccess(t);
     }
 
@@ -45,6 +46,7 @@ public abstract class BaseSubscriber<T> implements Subscriber<T> {
         if (context != null) {
             //dismiss load
         }
+        Log.e(getClass().getSimpleName(), "onError: " + t.toString());
         onFailure(new HttpResultException(-1, "", t));
     }
 

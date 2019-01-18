@@ -7,4 +7,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_new">新</string>
+    <string name="text_find_more_knowledge">发现更多干货</string>
+    <string name="text_hot_search">热门搜索</string>
+    <string name="text_search_history">搜索历史</string>
+    <string name="text_search_clear">清空</string>
+    <string name="text_to_login">去登陆</string>
+    <string name="text_register">注册</string>
+    <string name="text_login">登录</string>
 </resources>

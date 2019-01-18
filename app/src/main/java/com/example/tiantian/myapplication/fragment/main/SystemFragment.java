@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -43,6 +44,7 @@ public class SystemFragment extends AbsBindingFragment<MainViewModel, FragmentSy
     protected void initView(Bundle savedInstanceState) {
         final int rightSize = (int) getSelfActivity().getResources().getDimension(R.dimen.dp_8);
         final int topSize = (int) getSelfActivity().getResources().getDimension(R.dimen.dp_5);
+        binding.refreshSystem.setRefreshing(true);
         adapter = new BindingAdapter<Chapters, ItemSystemBinding>(getSelfActivity()) {
             @Override
             protected void convert(ItemSystemBinding binding, final Chapters chapters, int position) {
@@ -95,18 +97,37 @@ public class SystemFragment extends AbsBindingFragment<MainViewModel, FragmentSy
                         .putExtra("position", 0));
             }
         });
+        binding.refreshSystem.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.refreshSystem.setRefreshing(true);
+                adapter.setLoad(true);
+                viewModel.getHomeChapter();
+            }
+        });
     }
 
     @Override
     protected void initData() {
+        viewModel.getHomeChapter();
+    }
+
+    @Override
+    protected void observe() {
         viewModel.getChapterList().observe(this, new Observer<List<Chapters>>() {
             @Override
             public void onChanged(@Nullable List<Chapters> chapters) {
                 if (chapters != null) {
-                    adapter.addList(chapters);
+                    if (binding.refreshSystem.isRefreshing())
+                        binding.refreshSystem.setRefreshing(false);
+                    adapter.setList(chapters);
                 }
             }
         });
-        viewModel.getHomeChapter();
+    }
+
+    @Override
+    public boolean isLazy() {
+        return false;
     }
 }

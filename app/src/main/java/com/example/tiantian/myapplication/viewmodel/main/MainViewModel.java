@@ -3,6 +3,7 @@ package com.example.tiantian.myapplication.viewmodel.main;
 import android.app.Application;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.tiantian.myapplication.data.main.BannerData;
 import com.example.tiantian.myapplication.data.main.NaviData;
@@ -19,6 +20,7 @@ public class MainViewModel extends BaseViewModel<MainRepository> {
     private MutableLiveData<List<BannerData>> bannerList;
     private MutableLiveData<List<Chapters>> chapterList;
     private MutableLiveData<List<NaviData>> naviList;
+    private MutableLiveData<List<Chapters>> projectList;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -39,7 +41,6 @@ public class MainViewModel extends BaseViewModel<MainRepository> {
 
             @Override
             public void onFailure(HttpResultException exception) {
-
             }
         });
     }
@@ -75,6 +76,26 @@ public class MainViewModel extends BaseViewModel<MainRepository> {
             @Override
             public void onSuccess(List<NaviData> naviData) {
                 naviList.setValue(naviData);
+            }
+
+            @Override
+            public void onFailure(HttpResultException exception) {
+
+            }
+        });
+    }
+
+    public MutableLiveData<List<Chapters>> getProjectList() {
+        if (projectList == null)
+            projectList = new MutableLiveData<>();
+        return projectList;
+    }
+
+    public void getProjectTree() {
+        repository.getProjectList(new BaseSubscriber<List<Chapters>>() {
+            @Override
+            public void onSuccess(List<Chapters> chapters) {
+                projectList.setValue(chapters);
             }
 
             @Override

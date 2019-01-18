@@ -9,4 +9,9 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="TextAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlActivated">@color/colorPrimary</item><!--点击后下划线的颜色-->
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
 </resources>

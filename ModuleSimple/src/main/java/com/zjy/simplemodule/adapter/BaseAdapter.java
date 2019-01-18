@@ -6,6 +6,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<SimpleViewHold
     private boolean headerEnable;
     private boolean footerEnable;
     private boolean loadEnable;
-//    private boolean hasData = false;
+    //    private boolean hasData = false;
     private boolean isLoad = false;
     private boolean footerFullSpan = true;
     private boolean headerFullSpan = true;
@@ -97,6 +98,13 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<SimpleViewHold
                 if (loadMoreListener != null && !isLoad) {
                     isLoad = true;
                     loadMoreListener.onLoadMore();
+                }
+            } else if (type == TYPE_FOOTER) {
+                if (footerView.getTag() != null && footerView.getTag().equals("defaultFooterView")) {
+                    String text = "-----我是底线-----";
+                    if (list == null || list.isEmpty())
+                        text = "-----暂无数据-----";
+                    ((TextView) ((ViewGroup) footerView).getChildAt(0)).setText(text);
                 }
             }
             return;
@@ -181,20 +189,20 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<SimpleViewHold
     }
 
     public void setList(List<T> list) {
-        isLoad = false;
 //        hasData = true;
         this.list = list;
         notifyDataSetChanged();
+        isLoad = false;
     }
 
     public void addList(List<T> list) {
-        isLoad = false;
         if (this.list == null) {
             setList(list);
             return;
         }
         this.list.addAll(list);
         notifyItemChanged(getItemCount() - 1, list.size());
+        isLoad = false;
     }
 
     public List<T> getList() {
@@ -203,12 +211,19 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<SimpleViewHold
 
     public void clear() {
         if (list != null) {
+            int size = list.size();
             list.clear();
+            notifyItemRangeRemoved(0, size);
+//            notifyDataSetChanged();
         }
     }
 
     public void setLoad(boolean load) {
         isLoad = load;
+    }
+
+    public boolean isLoad() {
+        return isLoad;
     }
 
     public void setFooterEnable(boolean footerEnable) {
@@ -255,6 +270,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<SimpleViewHold
         textView.setTextSize(15);
         textView.setTextColor(context.getResources().getColor(R.color.colorBlack));
         linearLayout.addView(textView);
+        linearLayout.setTag("defaultFooterView");
         footerView = linearLayout;
     }
 

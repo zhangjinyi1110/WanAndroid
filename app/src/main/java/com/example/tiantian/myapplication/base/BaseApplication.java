@@ -1,14 +1,5 @@
 package com.example.tiantian.myapplication.base;
 
-import android.app.Application;
+public class BaseApplication extends com.zjy.simplemodule.base.BaseApplication {
 
-import com.example.tiantian.myapplication.utils.ActivityManager;
-
-public class BaseApplication extends Application {
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        ActivityManager.getInstance().init();
-    }
 }

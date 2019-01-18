@@ -6,15 +6,91 @@
 
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".activity.search.SearchActivity">
 
-        <android.support.v7.widget.RecyclerView
+        <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/search_recycler" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:id="@+id/search_toolbar"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    </android.support.constraint.ConstraintLayout>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_search_bg"
+                android:id="@+id/edit_search"
+                android:labelFor="@id/edit_search"
+                android:inputType="text"
+                android:hint="@string/text_find_more_knowledge"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorGray"
+                tools:ignore="Autofill,LabelFor"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:textSize="@dimen/sp_16"/>
+
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_hot_search"
+                    android:textSize="@dimen/sp_15"
+                    android:textColor="@color/colorAccent"
+                    android:layout_margin="@dimen/dp_10"/>
+
+                <com.example.tiantian.myapplication.widget.FlowLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/search_hot"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/dp_5"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_15"
+                        android:text="@string/text_search_history"
+                        android:layout_gravity="start|center_vertical"
+                        android:textColor="@color/colorAccent"
+                        android:layout_margin="@dimen/dp_10"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/search_history_clear"
+                        android:layout_gravity="end|center_vertical"
+                        android:text="@string/text_search_clear"
+                        android:padding="@dimen/dp_10"/>
+
+                </FrameLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recycler_search_history"/>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </LinearLayout>
 </layout>

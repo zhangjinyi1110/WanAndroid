@@ -11,10 +11,17 @@
         android:layout_height="match_parent"
         tools:context=".fragment.main.SystemFragment">
 
-        <android.support.v7.widget.RecyclerView
+        <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recycler_system"/>
+            android:id="@+id/refresh_system">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recycler_system"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </FrameLayout>
 </layout>

@@ -4,6 +4,9 @@ import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.example.tiantian.myapplication.R;
 import com.example.tiantian.myapplication.activity.webview.WebViewActivity;
@@ -39,10 +42,14 @@ public class HomeFragment extends AbsBindingFragment<MainViewModel, FragmentHome
         binding.homeBanner.setImageLoader(new GlideImageLoader());
         binding.homeBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
         binding.homeBanner.setIndicatorGravity(BannerConfig.RIGHT);
+        FragmentManager manager = getChildFragmentManager();
         if (savedInstanceState != null) {
-            getChildFragmentManager().getFragments().clear();
+            for (Fragment f : manager.getFragments()) {
+                manager.beginTransaction().remove(f).commit();
+            }
+            manager.getFragments().clear();
         }
-        getChildFragmentManager().beginTransaction()
+        manager.beginTransaction()
                 .replace(R.id.home_content, ArticleFragment.newInstance(NOT_CID))
                 .commitNow();
     }
@@ -61,6 +68,11 @@ public class HomeFragment extends AbsBindingFragment<MainViewModel, FragmentHome
 
     @Override
     protected void initData() {
+        viewModel.getHomeBannerList();
+    }
+
+    @Override
+    protected void observe() {
         viewModel.getBannerList().observe(this, new Observer<List<BannerData>>() {
             @Override
             public void onChanged(@Nullable List<BannerData> bannerData) {
@@ -78,6 +90,10 @@ public class HomeFragment extends AbsBindingFragment<MainViewModel, FragmentHome
                 }
             }
         });
-        viewModel.getHomeBannerList();
+    }
+
+    @Override
+    public boolean isLazy() {
+        return false;
     }
 }

@@ -2,6 +2,8 @@ package com.zjy.simplemodule.utils;
 
 import android.support.v4.app.FragmentActivity;
 
+import com.zjy.simplemodule.base.BaseApplication;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,10 @@ public class ActivityManager {
 
     private static ActivityManager manager;
     private List<FragmentActivity> activities;
+
+    public static void init(BaseApplication application) {
+        application.setActivityManager(getInstance());
+    }
 
     public static ActivityManager getInstance() {
         if (manager == null) {

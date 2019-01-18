@@ -54,4 +54,5 @@ dependencies {
     implementation rootProject.ext.dependencies["recyclerview-v7"]
     implementation rootProject.ext.dependencies["autodispose"]
     implementation rootProject.ext.dependencies["autodispose-android-archcomponents"]
+    implementation rootProject.ext.dependencies["loginterceptor"]
 }

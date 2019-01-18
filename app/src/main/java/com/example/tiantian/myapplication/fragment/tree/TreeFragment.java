@@ -1,20 +1,22 @@
 package com.example.tiantian.myapplication.fragment.tree;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import com.example.tiantian.myapplication.R;
 import com.example.tiantian.myapplication.data.wxarticle.Chapters;
 import com.example.tiantian.myapplication.databinding.FragmentTreeBinding;
 import com.example.tiantian.myapplication.fragment.ArticleFragment;
-import com.example.tiantian.myapplication.viewmodel.tree.TreeViewModel;
-import com.zjy.simplemodule.base.fragment.AbsBindingFragment;
+import com.zjy.simplemodule.base.fragment.BindingFragment;
 
 import java.util.ArrayList;
 
-public class TreeFragment extends AbsBindingFragment<TreeViewModel, FragmentTreeBinding> {
+public class TreeFragment extends BindingFragment<FragmentTreeBinding> {
 
     private ArrayList<ArticleFragment> fragments;
 
@@ -29,7 +31,7 @@ public class TreeFragment extends AbsBindingFragment<TreeViewModel, FragmentTree
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        ArrayList<Chapters> chapters = getSelfActivity().getIntent().getParcelableArrayListExtra("data");
+        final ArrayList<Chapters> chapters = getSelfActivity().getIntent().getParcelableArrayListExtra("data");
         fragments = new ArrayList<>();
         final ArrayList<String> titles = new ArrayList<>();
         for (int i = 0; i < chapters.size(); i++) {
@@ -37,7 +39,8 @@ public class TreeFragment extends AbsBindingFragment<TreeViewModel, FragmentTree
             fragments.add(ArticleFragment.newInstance(chapters.get(i).getId()));
             binding.treeTab.addTab(binding.treeTab.newTab());
         }
-        binding.treePager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+        FragmentManager manager = getChildFragmentManager();
+        binding.treePager.setAdapter(new FragmentPagerAdapter(manager) {
             @Override
             public Fragment getItem(int i) {
                 return fragments.get(i);
@@ -66,4 +69,10 @@ public class TreeFragment extends AbsBindingFragment<TreeViewModel, FragmentTree
     @Override
     protected void initData() {
     }
+
+    @Override
+    public boolean isLazy() {
+        return false;
+    }
+
 }

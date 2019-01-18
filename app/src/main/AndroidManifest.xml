@@ -31,7 +31,9 @@
         <activity android:name=".activity.search.SearchActivity" />
         <activity android:name=".activity.photo.PhotoActivity" />
         <activity android:name=".activity.photo.AlbumActivity" />
-        <activity android:name=".activity.tree.TreeActivity"></activity>
+        <activity android:name=".activity.tree.TreeActivity" />
+        <activity android:name=".activity.SearchResultActivity" />
+        <activity android:name=".activity.login.LoginActivity"></activity>
     </application>
 
 </manifest>

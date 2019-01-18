@@ -11,10 +11,17 @@
         android:layout_height="match_parent"
         tools:context=".fragment.ArticleFragment">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_article"
+        <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:id="@+id/refresh_article">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_article"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </FrameLayout>
 </layout>

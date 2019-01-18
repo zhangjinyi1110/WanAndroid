@@ -1,5 +1,7 @@
 package com.example.tiantian.myapplication.repository.main;
 
+import android.util.Log;
+
 import com.example.tiantian.myapplication.api.MainService;
 import com.example.tiantian.myapplication.data.main.BannerData;
 import com.example.tiantian.myapplication.data.main.NaviData;
@@ -44,6 +46,15 @@ public class MainRepository extends BaseRepository {
                 .compose(new HttpResultTransformer<List<NaviData>>())
                 .as(AutoDisposeUtils.<List<NaviData>>bind(getCurrActivity()))
                 .subscribe(subscriber);
+    }
+
+    public void getProjectList(BaseSubscriber<List<Chapters>> baseSubscriber) {
+        RetrofitUtils.getInstance()
+                .createService(MainService.class)
+                .getProjects()
+                .compose(new HttpResultTransformer<List<Chapters>>())
+                .as(AutoDisposeUtils.<List<Chapters>>bind(getCurrActivity()))
+                .subscribe(baseSubscriber);
     }
 
 }

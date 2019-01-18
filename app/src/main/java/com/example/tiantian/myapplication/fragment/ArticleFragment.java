@@ -4,9 +4,10 @@ import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -25,9 +26,20 @@ import com.zjy.simplemodule.base.fragment.AbsBindingFragment;
 public class ArticleFragment extends AbsBindingFragment<ArticleViewModel, FragmentArticleBinding> {
 
     private BindingAdapter<ArticleData, ItemHomeArticleBinding> adapter;
-    private int page = 0;
+    private int page;
     private int cid;
+    private String k;
     public static final int NOT_CID = -1;
+    public static final int SEARCH = -2;
+
+    public static ArticleFragment newInstance(int cid, String k) {
+        Bundle args = new Bundle();
+        args.putInt("cid", cid);
+        args.putString("k", k);
+        ArticleFragment fragment = new ArticleFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public static ArticleFragment newInstance(int cid) {
         Bundle args = new Bundle();
@@ -43,6 +55,12 @@ public class ArticleFragment extends AbsBindingFragment<ArticleViewModel, Fragme
         Bundle bundle = getArguments();
         if (bundle != null) {
             cid = bundle.getInt("cid");
+            if (cid == NOT_CID)
+                setLazy(false);
+            else if (cid == SEARCH) {
+                setLazy(false);
+                k = bundle.getString("k");
+            }
         }
     }
 
@@ -53,6 +71,7 @@ public class ArticleFragment extends AbsBindingFragment<ArticleViewModel, Fragme
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        binding.refreshArticle.setEnabled(cid != NOT_CID);
         adapter = new BindingAdapter<ArticleData, ItemHomeArticleBinding>(getSelfActivity()) {
             @Override
             protected void convert(ItemHomeArticleBinding binding, ArticleData articleData, int position) {
@@ -65,12 +84,14 @@ public class ArticleFragment extends AbsBindingFragment<ArticleViewModel, Fragme
                     binding.itemArticleImage.setVisibility(View.VISIBLE);
                     Glide.with(getSelfActivity()).load(articleData.getEnvelopePic()).into(binding.itemArticleImage);
                 }
-                if (articleData.getNiceDate().contains("小时前")) {
+                if (articleData.getNiceDate().contains("小时前")
+                        || articleData.getNiceDate().contains("分钟前")
+                        || articleData.getNiceDate().contains("秒前")) {
                     binding.itemNew.setVisibility(View.VISIBLE);
                 } else {
                     binding.itemNew.setVisibility(View.GONE);
                 }
-                binding.itemArticleTitle.setText(articleData.getTitle());
+                binding.itemArticleTitle.setText(Html.fromHtml(articleData.getTitle()));
                 binding.itemArticleAuthor.setText(articleData.getAuthor());
                 binding.itemArticleTime.setText(articleData.getNiceDate());
                 binding.itemArticleTag.setText(articleData.getChapterName());
@@ -84,6 +105,7 @@ public class ArticleFragment extends AbsBindingFragment<ArticleViewModel, Fragme
         binding.recyclerArticle.addItemDecoration(new RailItemDecoration(getSelfActivity()));
         binding.recyclerArticle.setLayoutManager(new LinearLayoutManager(getSelfActivity()));
         binding.recyclerArticle.setAdapter(adapter);
+//        ((SimpleItemAnimator) binding.recyclerArticle.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
     @Override
@@ -91,7 +113,6 @@ public class ArticleFragment extends AbsBindingFragment<ArticleViewModel, Fragme
         adapter.setLoadMoreListener(new BaseAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                Log.e(TAG, "onLoadMore: ");
                 viewModel.getArticle(page, cid);
             }
         });
@@ -103,29 +124,46 @@ public class ArticleFragment extends AbsBindingFragment<ArticleViewModel, Fragme
                         .putExtra("title", articleData.getTitle()));
             }
         });
+        binding.refreshArticle.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!binding.refreshArticle.isRefreshing())
+                    binding.refreshArticle.setRefreshing(true);
+                initData();
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        Log.d(TAG, "initData: " + cid);
-        viewModel.getArticleData().observe(this, new Observer<Article>() {
+        page = 0;
+        adapter.setLoad(true);
+        adapter.clear();
+        adapter.setLoadEnable(true);
+        if (k == null)
+            viewModel.getArticle(page, cid);
+        else
+            viewModel.search(page, k);
+    }
+
+    @Override
+    protected void observe() {
+        Observer<Article> observer = new Observer<Article>() {
             @Override
             public void onChanged(@Nullable Article article) {
                 if (article != null) {
-                    Log.e(TAG, "onChanged: " + cid);
-                    if (article.getCurPage() == article.getPageCount()) {
+                    if (article.isOver()) {
                         adapter.setLoadEnable(false);
                     }
+                    if (binding.refreshArticle.isRefreshing())
+                        binding.refreshArticle.setRefreshing(false);
                     page++;
                     adapter.addList(article.getDatas());
                 }
             }
-        });
-        viewModel.getArticle(page, cid);
+        };
+        viewModel.getArticleData().observe(this, observer);
+        viewModel.getSearchResult().observe(this, observer);
     }
 
-    @Override
-    public boolean isLazy() {
-        return false;
-    }
 }

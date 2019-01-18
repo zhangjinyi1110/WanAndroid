@@ -29,4 +29,11 @@ public abstract class AbsActivity<VM extends BaseViewModel> extends BaseActivity
             return null;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (viewModel != null)
+            viewModel.onCleared();
+    }
 }

@@ -18,6 +18,7 @@ public abstract class AbsFragment<VM extends BaseViewModel> extends BaseFragment
     @Override
     protected void initViewModel() {
         viewModel = getViewModel();
+        observe();
     }
 
     private VM getViewModel() {
@@ -28,4 +29,6 @@ public abstract class AbsFragment<VM extends BaseViewModel> extends BaseFragment
             return null;
         }
     }
+
+    protected abstract void observe();
 }

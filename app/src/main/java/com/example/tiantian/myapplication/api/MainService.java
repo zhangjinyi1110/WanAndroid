@@ -21,4 +21,7 @@ public interface MainService {
     @GET("navi/json")
     Flowable<HttpResult<List<NaviData>>> getNavigation();
 
+    @GET("project/tree/json")
+    Flowable<HttpResult<List<Chapters>>> getProjects();
+
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 import com.zjy.simplemodule.base.BaseViewModel;
 
@@ -18,6 +19,9 @@ public abstract class SimpleActivity<VM extends BaseViewModel> extends AbsActivi
     protected void initView(Bundle savedInstanceState) {
         manager = getSupportFragmentManager();
         if (savedInstanceState != null) {
+            for (Fragment f : manager.getFragments()) {
+                manager.beginTransaction().remove(f).commit();
+            }
             manager.getFragments().clear();
         }
         currFragment = getFragment();
@@ -46,7 +50,7 @@ public abstract class SimpleActivity<VM extends BaseViewModel> extends AbsActivi
                 transaction.add(getContentId(), fragment, fragment.getClass().getSimpleName());
             }
             currFragment = fragment;
-            transaction.commitNow();
+            transaction.commit();
         }
     }
 

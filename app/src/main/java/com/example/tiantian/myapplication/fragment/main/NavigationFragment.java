@@ -3,12 +3,12 @@ package com.example.tiantian.myapplication.fragment.main;
 import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,12 +22,9 @@ import com.example.tiantian.myapplication.databinding.ItemNaviItemBinding;
 import com.example.tiantian.myapplication.databinding.ItemNaviTitleBinding;
 import com.example.tiantian.myapplication.viewmodel.main.MainViewModel;
 import com.zjy.simplemodule.adapter.BindingAdapter;
-import com.zjy.simplemodule.adapter.viewholder.SimpleViewHolder;
-import com.zjy.simplemodule.base.BaseViewModel;
 import com.zjy.simplemodule.base.fragment.AbsBindingFragment;
-import com.zjy.simplemodule.utils.ToastUtils;
+import com.zjy.simplemodule.widget.PageLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NavigationFragment extends AbsBindingFragment<MainViewModel, FragmentNavigationBinding> {
@@ -47,6 +44,7 @@ public class NavigationFragment extends AbsBindingFragment<MainViewModel, Fragme
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        binding.refreshNavigation.setRefreshing(true);
         typedArray = getResources().obtainTypedArray(R.array.textcolor);
         titleAdapter = new BindingAdapter<NaviData, ItemNaviTitleBinding>(getSelfActivity()) {
             @Override
@@ -87,6 +85,7 @@ public class NavigationFragment extends AbsBindingFragment<MainViewModel, Fragme
                 final List<ArticleData> arrayList = naviData.getArticles();
                 int topSize = (int) getSelfActivity().getResources().getDimension(R.dimen.dp_5);
                 int rightSize = (int) getSelfActivity().getResources().getDimension(R.dimen.dp_5);
+                binding.itemNaviSub.removeAllViews();
                 for (int i = 0; i < arrayList.size(); i++) {
                     ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     layoutParams.setMargins(0, topSize, rightSize, 0);
@@ -129,20 +128,62 @@ public class NavigationFragment extends AbsBindingFragment<MainViewModel, Fragme
                 titleAdapter.notifyItemRangeChanged(position, 1, "curr");
             }
         });
+        binding.recyclerNavigationItem.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                View view = recyclerView.findChildViewUnder(dx, dx);
+                if (view == null)
+                    return;
+                int index = recyclerView.getChildAdapterPosition(view);
+                if (index == titleAdapter.getCurr())
+                    return;
+                titleAdapter.setLast(titleAdapter.getCurr());
+                titleAdapter.setCurr(index);
+                titleAdapter.notifyItemRangeChanged(titleAdapter.getLast(), 1, "last");
+                titleAdapter.notifyItemRangeChanged(index, 1, "curr");
+                binding.recyclerNavigationTitle.smoothScrollToPosition(index);
+            }
+        });
+        binding.refreshNavigation.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.refreshNavigation.setRefreshing(true);
+                titleAdapter.setLoad(true);
+                itemAdapter.setLoad(true);
+                viewModel.getHomeNavi();
+            }
+        });
     }
 
     @Override
     protected void initData() {
+        viewModel.getHomeNavi();
+    }
+
+    @Override
+    protected void observe() {
         viewModel.getNaviList().observe(this, new Observer<List<NaviData>>() {
             @Override
             public void onChanged(@Nullable List<NaviData> naviData) {
                 if (naviData != null) {
-                    titleAdapter.addList(naviData);
-                    itemAdapter.addList(naviData);
+                    if (binding.refreshNavigation.isRefreshing())
+                        binding.refreshNavigation.setRefreshing(false);
+                    titleAdapter.setList(naviData);
+                    itemAdapter.setList(naviData);
                 }
             }
         });
-        viewModel.getHomeNavi();
+    }
+
+    @Override
+    public boolean isLazy() {
+        return false;
     }
 
 }

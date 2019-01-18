@@ -6,7 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.zjy.simplemodule.utils.ActivityManager;
 
@@ -84,4 +88,41 @@ public abstract class BaseActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (isHideKeyboard()) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                View view = getWindow().getCurrentFocus();
+                if (view != null) {
+                    int[] lt = new int[2];
+                    view.getLocationInWindow(lt);
+                    int left = lt[0];
+                    int top = lt[1];
+                    int bottom = top + view.getHeight();
+                    int right = left + view.getWidth();
+                    float x = event.getX();
+                    float y = event.getY();
+                    boolean flag = x >= left && x <= right && y >= top && y <= bottom;
+                    if (!flag) {
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        if (inputMethodManager != null) {
+                            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            view.clearFocus();
+                        }
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    protected boolean isHideKeyboard() {
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        ActivityManager.getInstance().removeActivity(this);
+        super.onDestroy();
+    }
 }

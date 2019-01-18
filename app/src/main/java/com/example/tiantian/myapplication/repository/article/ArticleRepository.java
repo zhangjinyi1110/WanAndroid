@@ -1,6 +1,7 @@
 package com.example.tiantian.myapplication.repository.article;
 
 import com.example.tiantian.myapplication.api.ArticleService;
+import com.example.tiantian.myapplication.api.SearchService;
 import com.example.tiantian.myapplication.data.wxarticle.Article;
 import com.zjy.simplemodule.base.BaseRepository;
 import com.zjy.simplemodule.retrofit.AutoDisposeUtils;
@@ -27,6 +28,15 @@ public class ArticleRepository extends BaseRepository {
         RetrofitUtils.getInstance()
                 .createService(ArticleService.class)
                 .getArticle(page)
+                .compose(new HttpResultTransformer<Article>())
+                .as(AutoDisposeUtils.<Article>bind(getCurrActivity()))
+                .subscribe(subscriber);
+    }
+
+    public void search(int page, String k, BaseSubscriber<Article> subscriber) {
+        RetrofitUtils.getInstance()
+                .createService(SearchService.class)
+                .search(page, k)
                 .compose(new HttpResultTransformer<Article>())
                 .as(AutoDisposeUtils.<Article>bind(getCurrActivity()))
                 .subscribe(subscriber);

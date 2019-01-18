@@ -1,15 +1,23 @@
 package com.example.tiantian.myapplication.activity.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.tiantian.myapplication.R;
+import com.example.tiantian.myapplication.activity.login.LoginActivity;
+import com.example.tiantian.myapplication.activity.search.SearchActivity;
 import com.example.tiantian.myapplication.databinding.ActivityMainBinding;
 import com.example.tiantian.myapplication.fragment.main.HomeFragment;
 import com.example.tiantian.myapplication.fragment.main.NavigationFragment;
@@ -24,6 +32,8 @@ public class MainActivity extends SimpleBindingActivity<MainViewModel, ActivityM
     private SystemFragment systemFragment;
     private NavigationFragment navigationFragment;
     private ProjectFragment projectFragment;
+    private ImageView headerImage;
+    private TextView headerName;
 
     @Override
     protected int getContentId() {
@@ -61,6 +71,8 @@ public class MainActivity extends SimpleBindingActivity<MainViewModel, ActivityM
         systemFragment = SystemFragment.newInstance();
         navigationFragment = NavigationFragment.newInstance();
         projectFragment = ProjectFragment.newInstance();
+        headerImage = binding.mainNavigation.getHeaderView(0).findViewById(R.id.header_image);
+        headerName = binding.mainNavigation.getHeaderView(0).findViewById(R.id.header_name);
     }
 
     @Override
@@ -90,5 +102,46 @@ public class MainActivity extends SimpleBindingActivity<MainViewModel, ActivityM
                 , binding.mainToolbar, R.string.app_name, R.string.app_name);
         toggle.syncState();
         binding.mainDrawer.addDrawerListener(toggle);
+        binding.mainNavigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_about_me:
+                        break;
+                    case R.id.navigation_collect:
+                        break;
+                    case R.id.navigation_light:
+                        break;
+                    case R.id.navigation_settings:
+                        break;
+                }
+                binding.mainDrawer.closeDrawers();
+                return true;
+            }
+        });
+        headerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (headerName.getText().toString().equals(getString(R.string.text_to_login))) {
+                    startActivity(new Intent(getSelf(), LoginActivity.class));
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.main_option_search:
+                startActivity(new Intent(getSelf(), SearchActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

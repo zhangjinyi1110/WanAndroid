@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorWhite"
+        tools:context=".fragment.login.RegisterFragment">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:src="@mipmap/ic_launcher"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/dp_30"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_login"
+                android:id="@+id/to_login"
+                android:layout_gravity="end"
+                android:padding="@dimen/dp_5"/>
+
+        </FrameLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:theme="@style/TextAppTheme">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:hint="username"
+                android:id="@+id/register_username"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                tools:ignore="Autofill" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_30"
+            android:theme="@style/TextAppTheme">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:hint="password"
+                android:id="@+id/register_password"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                tools:ignore="Autofill" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_30"
+            android:theme="@style/TextAppTheme">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:hint="two password"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                android:id="@+id/register_two_password"
+                tools:ignore="Autofill" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_30"
+            android:background="@drawable/btn_bg"
+            android:padding="@dimen/dp_10"
+            android:text="@string/text_register"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:id="@+id/register_btn"
+            android:transitionName="submit_btn"
+            tools:ignore="UnusedAttribute" />
+
+    </LinearLayout>
+</layout>

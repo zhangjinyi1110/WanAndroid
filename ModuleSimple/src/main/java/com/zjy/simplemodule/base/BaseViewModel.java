@@ -46,7 +46,8 @@ public class BaseViewModel<R extends BaseRepository> extends AndroidViewModel {
     }
 
     @Override
-    protected void onCleared() {
+    public void onCleared() {
         super.onCleared();
+        repository.close();
     }
 }
