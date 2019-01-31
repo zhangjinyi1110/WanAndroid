@@ -55,4 +55,5 @@ dependencies {
     implementation rootProject.ext.dependencies["autodispose"]
     implementation rootProject.ext.dependencies["autodispose-android-archcomponents"]
     implementation rootProject.ext.dependencies["loginterceptor"]
+    implementation rootProject.ext.dependencies["okhttp"]
 }

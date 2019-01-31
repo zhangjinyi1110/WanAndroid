@@ -2,6 +2,7 @@ package com.zjy.simplemodule.utils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.zjy.simplemodule.base.Contracts;
@@ -32,7 +33,7 @@ public class DiskCache {
     }
 
     private void init(Context context) {
-        uniqueName = context.getPackageName();
+        uniqueName = "";
         cachePath = getDiskCacheDir(context);
     }
 
@@ -46,12 +47,12 @@ public class DiskCache {
         return cachePath;
     }
 
-    public DiskCache cachePath(String path) {
+    private DiskCache cachePath(String path) {
         uniqueName = path;
         return this;
     }
 
-    public <T> T save(String key, T value) {
+    private <T> T save(String key, T value) {
         open();
         DiskLruCache.Editor editor = null;
         try {
@@ -76,30 +77,13 @@ public class DiskCache {
 
     public <T> T saveAndClose(String key, T value) {
         open();
-        DiskLruCache.Editor editor = null;
-        try {
-            editor = diskLruCache.edit(hashKeyForDisk(key));
-            OutputStream stream = editor.newOutputStream(0);
-            ObjectOutputStream outputStream = new ObjectOutputStream(stream);
-            outputStream.writeObject(value);
-            outputStream.flush();
-            editor.commit();
-        } catch (IOException e) {
-            try {
-                if (editor != null) {
-                    editor.abort();
-                }
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            e.printStackTrace();
-        }
+        T t = save(key, value);
         close();
-        return value;
+        return t;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(String key) {
+    private <T> T get(String key) {
         open();
         T t = null;
         try {
@@ -136,10 +120,11 @@ public class DiskCache {
     }
 
     private void open() {
-        if (diskLruCache != null && !diskLruCache.isClosed()) {
-            return;
-        }
-        File file = new File(cachePath + uniqueName);
+//        if (diskLruCache != null && !diskLruCache.isClosed()) {
+//            return;
+//        }
+        File file = new File(cachePath + "/" + uniqueName);
+        Log.e(getClass().getSimpleName(), "open: " + file.getAbsolutePath());
         try {
             if (!file.exists()) {
                 file.exists();
@@ -173,6 +158,27 @@ public class DiskCache {
             sb.append(hex);
         }
         return sb.toString();
+    }
+
+    public long size() {
+        open();
+        long size = diskLruCache.size();
+        close();
+        return size;
+    }
+
+    public void clear() {
+        open();
+        try {
+            diskLruCache.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        close();
+    }
+
+    public String getCachePath() {
+        return cachePath + "/" + uniqueName;
     }
 
     public static void close() {

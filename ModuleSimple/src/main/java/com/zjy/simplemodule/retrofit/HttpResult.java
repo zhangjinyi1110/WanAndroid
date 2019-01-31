@@ -25,4 +25,12 @@ public class HttpResult<T> {
     public void setData(T data) {
         this.data = data;
     }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
 }

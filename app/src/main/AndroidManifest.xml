@@ -33,7 +33,10 @@
         <activity android:name=".activity.photo.AlbumActivity" />
         <activity android:name=".activity.tree.TreeActivity" />
         <activity android:name=".activity.SearchResultActivity" />
-        <activity android:name=".activity.login.LoginActivity"></activity>
+        <activity android:name=".activity.login.LoginActivity" />
+        <activity android:name=".activity.settings.SettingsActivity" />
+        <activity android:name=".activity.collect.CollectActivity" />
+        <activity android:name=".activity.about.AboutActivity"></activity>
     </application>
 
 </manifest>

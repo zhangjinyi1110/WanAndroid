@@ -201,7 +201,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<SimpleViewHold
             return;
         }
         this.list.addAll(list);
-        notifyItemChanged(getItemCount() - 1, list.size());
+        notifyItemRangeChanged(getItemCount() - 1, list.size());
         isLoad = false;
     }
 

@@ -2,9 +2,6 @@ package com.zjy.simplemodule.retrofit;
 
 import android.content.Context;
 
-import com.zjy.simplemodule.utils.ActivityManager;
-import com.zjy.simplemodule.utils.ToastUtils;
-
 import org.reactivestreams.Publisher;
 
 import io.reactivex.Flowable;

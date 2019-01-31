@@ -41,6 +41,10 @@ public class ActivityManager {
         return manager;
     }
 
+    public List<FragmentActivity> getActivities() {
+        return activities;
+    }
+
     public FragmentActivity getCurrActivity() {
         return activities.get(activities.size() - 1);
     }

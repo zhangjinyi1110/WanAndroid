@@ -46,19 +46,25 @@ public class SearchRepository extends BaseRepository {
 
     @SuppressLint("CheckResult")
     public void getSearchHistory(Consumer<ArrayList<String>> consumer) {
-        String historyList = DiskCache.with(getCurrActivity()).cachePath(Contracts.SEARCH_HISTORY_PATH).get(Contracts.SEARCH_HISTORY);
+        String historyList = DiskCache.with(getCurrActivity())
+//                .cachePath(Contracts.SEARCH_HISTORY_PATH)
+                .getAndClose(Contracts.SEARCH_HISTORY_CACHE);
         Observable.just(TextUtils.isEmpty(historyList))
                 .map(new StringToListFunction())
                 .subscribe(consumer);
     }
 
     public void historyClear() {
-        DiskCache.with(getCurrActivity()).cachePath(Contracts.SEARCH_HISTORY_PATH).remove(Contracts.SEARCH_HISTORY);
+        DiskCache.with(getCurrActivity())
+//                .cachePath(Contracts.SEARCH_HISTORY_PATH)
+                .remove(Contracts.SEARCH_HISTORY_CACHE);
     }
 
     @SuppressLint("CheckResult")
     public void historyDelete(final String name, Consumer<ArrayList<String>> consumer) {
-        String history = DiskCache.with(getCurrActivity()).cachePath(Contracts.SEARCH_HISTORY_PATH).get(Contracts.SEARCH_HISTORY);
+        String history = DiskCache.with(getCurrActivity())
+//                .cachePath(Contracts.SEARCH_HISTORY_PATH)
+                .getAndClose(Contracts.SEARCH_HISTORY_CACHE);
         Observable.just(TextUtils.isEmpty(history))
                 .map(new StringToListFunction())
                 .flatMap(new Function<ArrayList<String>, ObservableSource<String>>() {
@@ -89,8 +95,8 @@ public class SearchRepository extends BaseRepository {
                                     @Override
                                     public void accept(String s) {
                                         DiskCache.with(getCurrActivity())
-                                                .cachePath(Contracts.SEARCH_HISTORY_PATH)
-                                                .save(Contracts.SEARCH_HISTORY, s);
+//                                                .cachePath(Contracts.SEARCH_HISTORY_PATH)
+                                                .saveAndClose(Contracts.SEARCH_HISTORY_CACHE, s);
                                     }
                                 });
                     }
@@ -100,7 +106,9 @@ public class SearchRepository extends BaseRepository {
 
     @SuppressLint("CheckResult")
     public void historyUpdate(final String name, Consumer<ArrayList<String>> consumer) {
-        String history = DiskCache.with(getCurrActivity()).cachePath(Contracts.SEARCH_HISTORY_PATH).get(Contracts.SEARCH_HISTORY);
+        String history = DiskCache.with(getCurrActivity())
+//                .cachePath(Contracts.SEARCH_HISTORY_PATH)
+                .getAndClose(Contracts.SEARCH_HISTORY_CACHE);
         Observable.just(TextUtils.isEmpty(history))
                 .map(new StringToListFunction())//string转化list
                 .flatMap(new Function<ArrayList<String>, ObservableSource<String>>() {
@@ -133,8 +141,8 @@ public class SearchRepository extends BaseRepository {
                                     @Override
                                     public void accept(String s) {
                                         DiskCache.with(getCurrActivity())
-                                                .cachePath(Contracts.SEARCH_HISTORY_PATH)
-                                                .save(Contracts.SEARCH_HISTORY, s);
+//                                                .cachePath(Contracts.SEARCH_HISTORY_PATH)
+                                                .saveAndClose(Contracts.SEARCH_HISTORY_CACHE, s);
                                     }
                                 });
                     }

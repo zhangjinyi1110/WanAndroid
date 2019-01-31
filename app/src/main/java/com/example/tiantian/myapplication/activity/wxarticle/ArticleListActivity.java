@@ -15,6 +15,7 @@ import com.example.tiantian.myapplication.activity.webview.WebViewActivity;
 import com.example.tiantian.myapplication.adapter.SimpleAdapter;
 import com.example.tiantian.myapplication.adapter.itemdecoration.SimpleItemDecoration;
 import com.example.tiantian.myapplication.base.BaseActivity;
+import com.example.tiantian.myapplication.base.Contracts;
 import com.example.tiantian.myapplication.data.wxarticle.Article;
 import com.example.tiantian.myapplication.data.wxarticle.ArticleData;
 import com.example.tiantian.myapplication.databinding.ActivityArticleListBinding;
@@ -79,8 +80,10 @@ public class ArticleListActivity extends BaseActivity<ActivityArticleListBinding
             @Override
             public void onItemClick(ViewDataBinding binding, int position) {
                 startActivity(new Intent(getApplicationContext(), WebViewActivity.class)
-                        .putExtra("url", adapter.getItemData(position).getLink())
-                        .putExtra("title", adapter.getItemData(position).getTitle()));
+                        .putExtra(Contracts.ARTICLE_URL, adapter.getItemData(position).getLink())
+                        .putExtra(Contracts.ARTICLE_TITLE, adapter.getItemData(position).getTitle())
+                        .putExtra(Contracts.ARTICLE_IS_COLLECT, adapter.getItemData(position).isCollect())
+                        .putExtra(Contracts.ARTICLE_ID, adapter.getItemData(position).getId()));
             }
         });
         adapter.setLoadMoreListener(new SimpleAdapter.OnLoadMoreListener() {

@@ -1,8 +1,9 @@
 package com.example.tiantian.myapplication.data.wxarticle;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Article {
+public class Article implements Serializable {
     /**
      * curPage : 3
      * datas : []

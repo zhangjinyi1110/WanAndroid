@@ -2,13 +2,15 @@ package com.zjy.simplemodule.retrofit;
 
 import android.util.Log;
 
-import com.zjy.simplemodule.interceptor.AddCookieInterceptor;
-import com.zjy.simplemodule.interceptor.TwoInterceptor;
+import com.zjy.simplemodule.interceptor.SyncCookieInterceptor;
 import com.zjy.simplemodule.utils.ActivityManager;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -56,7 +58,7 @@ public class RetrofitUtils {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                 @Override
                 public void log(String message) {
-                    Log.e(getClass().getSimpleName(), "log: " + message);
+                    Log.e("retrofit", "log: " + message);
                 }
             });
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -64,9 +66,8 @@ public class RetrofitUtils {
                     .writeTimeout(10000, TimeUnit.SECONDS)
                     .readTimeout(10000, TimeUnit.SECONDS)
                     .connectTimeout(10000, TimeUnit.SECONDS)
-                    .addInterceptor(new TwoInterceptor())
-                    .addInterceptor(new AddCookieInterceptor(ActivityManager.getInstance().getCurrActivity()))
-//                    .addInterceptor(interceptor)
+                    .addInterceptor(interceptor)
+                    .addInterceptor(new SyncCookieInterceptor(ActivityManager.getInstance().getCurrActivity()))
                     .build();
         }
         return client;

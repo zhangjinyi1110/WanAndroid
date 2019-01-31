@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.example.tiantian.myapplication.R;
 import com.example.tiantian.myapplication.activity.webview.WebViewActivity;
+import com.example.tiantian.myapplication.base.Contracts;
 import com.example.tiantian.myapplication.data.main.BannerData;
 import com.example.tiantian.myapplication.databinding.FragmentHomeBinding;
 import com.example.tiantian.myapplication.fragment.ArticleFragment;
@@ -60,8 +61,10 @@ public class HomeFragment extends AbsBindingFragment<MainViewModel, FragmentHome
             @Override
             public void OnBannerClick(int position) {
                 startActivity(new Intent(getSelfActivity(), WebViewActivity.class)
-                        .putExtra("url", bannerList.get(position).getUrl())
-                        .putExtra("title", bannerList.get(position).getTitle()));
+                        .putExtra(Contracts.ARTICLE_URL, bannerList.get(position).getUrl())
+                        .putExtra(Contracts.ARTICLE_TITLE, bannerList.get(position).getTitle())
+                        .putExtra(Contracts.ARTICLE_BANNER, true)
+                        .putExtra(Contracts.ARTICLE_ID, bannerList.get(position).getId()));
             }
         });
     }

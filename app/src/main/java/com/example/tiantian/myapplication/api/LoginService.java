@@ -20,6 +20,6 @@ public interface LoginService {
     Flowable<HttpResult<User>> login(@Field("username") String username, @Field("password") String password);
 
     @GET("user/logout/json")
-    Flowable<HttpResult<Object>> logout();
+    Flowable<HttpResult<String>> logout();
 
 }

@@ -48,7 +48,9 @@ ext {
     retrofit = retrofitVersion
     converterGson = retrofitVersion
     adapterRxjava2 = retrofitVersion
-    loginterceptor = "3.1.2"
+    okhttpVersion = "3.8.0"
+    okhttp = okhttpVersion
+    loginterceptor = okhttpVersion
     autodisposeVersion = "0.8.0"
     autodispose = autodisposeVersion
     autodisposeAndroidArchcomponents = autodisposeVersion
@@ -89,6 +91,7 @@ ext {
             "glide":"com.github.bumptech.glide:glide:$glide",
             "compiler":"com.github.bumptech.glide:compiler:$compiler",
             "banner":"com.youth.banner:banner:$banner",
+            "okhttp":"com.squareup.okhttp3:okhttp:$okhttpVersion",
             "loginterceptor":"com.squareup.okhttp3:logging-interceptor:$loginterceptor"
     ]
 }

@@ -1,8 +1,9 @@
 package com.example.tiantian.myapplication.data.wxarticle;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ArticleData {
+public class ArticleData implements Serializable {
     /**
      * apkLink :
      * author : 鸿洋
@@ -51,7 +52,16 @@ public class ArticleData {
     private int userId;
     private int visible;
     private int zan;
+    private int originId;
     private List<TagsBean> tags;
+
+    public int getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(int originId) {
+        this.originId = originId;
+    }
 
     public String getApkLink() {
         return apkLink;
@@ -237,7 +247,7 @@ public class ArticleData {
         this.tags = tags;
     }
 
-    public static class TagsBean {
+    public static class TagsBean implements Serializable {
         /**
          * name : 公众号
          * url : /wxarticle/list/408/1

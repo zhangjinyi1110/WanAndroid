@@ -70,6 +70,7 @@ public class RegisterFragment extends AbsBindingFragment<LoginViewModel, Fragmen
             @Override
             public void onChanged(@Nullable User user) {
                 if (user != null) {
+                    user.setPassword(binding.registerPassword.getText().toString());
                     subject.onNext(new ViewData(true, user));
                 }
             }

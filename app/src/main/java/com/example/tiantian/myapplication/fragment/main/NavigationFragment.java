@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.tiantian.myapplication.R;
 import com.example.tiantian.myapplication.activity.webview.WebViewActivity;
+import com.example.tiantian.myapplication.base.Contracts;
 import com.example.tiantian.myapplication.data.main.NaviData;
 import com.example.tiantian.myapplication.data.wxarticle.ArticleData;
 import com.example.tiantian.myapplication.databinding.FragmentNavigationBinding;
@@ -99,8 +100,10 @@ public class NavigationFragment extends AbsBindingFragment<MainViewModel, Fragme
                         @Override
                         public void onClick(View v) {
                             startActivity(new Intent(getSelfActivity(), WebViewActivity.class)
-                                    .putExtra("title", arrayList.get(finalI).getTitle())
-                                    .putExtra("url", arrayList.get(finalI).getLink()));
+                                    .putExtra(Contracts.ARTICLE_TITLE, arrayList.get(finalI).getTitle())
+                                    .putExtra(Contracts.ARTICLE_URL, arrayList.get(finalI).getLink())
+                                    .putExtra(Contracts.ARTICLE_IS_COLLECT, arrayList.get(finalI).isCollect())
+                                    .putExtra(Contracts.ARTICLE_ID, arrayList.get(finalI).getId()));
                         }
                     });
                     binding.itemNaviSub.addView(textView);

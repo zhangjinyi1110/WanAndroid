@@ -1,7 +1,6 @@
 package com.zjy.simplemodule.retrofit;
 
-import com.zjy.simplemodule.utils.ActivityManager;
-import com.zjy.simplemodule.utils.ToastUtils;
+import android.util.Log;
 
 import org.reactivestreams.Publisher;
 
@@ -13,7 +12,10 @@ public class HttpResultFunction<T> implements Function<HttpResult<T>, Publisher<
     @Override
     public Publisher<T> apply(HttpResult<T> tHttpResult) throws Exception {
         if (tHttpResult.getData() == null) {
-            return Flowable.error(new NullResultException());
+            if (tHttpResult.getErrorCode() == 0)
+                return Flowable.empty();
+            Log.e(getClass().getSimpleName(), "apply: " + tHttpResult.getErrorCode());
+            return Flowable.error(new NullResultException(tHttpResult));
         }
         return Flowable.just(tHttpResult.getData());
     }

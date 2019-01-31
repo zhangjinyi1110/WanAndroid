@@ -1,9 +1,7 @@
 package com.zjy.simplemodule.retrofit;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.zjy.simplemodule.retrofit.HttpResultException;
 import com.zjy.simplemodule.utils.ActivityManager;
 import com.zjy.simplemodule.utils.NetWorkUtils;
 import com.zjy.simplemodule.utils.ToastUtils;
@@ -14,6 +12,7 @@ import org.reactivestreams.Subscription;
 public abstract class BaseSubscriber<T> implements Subscriber<T> {
 
     private Context context;
+    private boolean emptyFlag = true;
 
     public BaseSubscriber() {
     }
@@ -37,8 +36,8 @@ public abstract class BaseSubscriber<T> implements Subscriber<T> {
 
     @Override
     public void onNext(T t) {
-        Log.e(getClass().getSimpleName(), "onNext: ");
         onSuccess(t);
+        emptyFlag = false;
     }
 
     @Override
@@ -46,8 +45,9 @@ public abstract class BaseSubscriber<T> implements Subscriber<T> {
         if (context != null) {
             //dismiss load
         }
-        Log.e(getClass().getSimpleName(), "onError: " + t.toString());
-        onFailure(new HttpResultException(-1, "", t));
+        HttpResultException exception = new HttpResultException(t);
+        ToastUtils.showToastShort(ActivityManager.getInstance().getCurrActivity(), exception.getErrorMessage());
+        onFailure(exception);
     }
 
     @Override
@@ -55,9 +55,14 @@ public abstract class BaseSubscriber<T> implements Subscriber<T> {
         if (context != null) {
             //dismiss load
         }
+        if (emptyFlag)
+            onEmpty();
     }
 
     public abstract void onSuccess(T t);
 
     public abstract void onFailure(HttpResultException exception);
+
+    public void onEmpty() {
+    }
 }
