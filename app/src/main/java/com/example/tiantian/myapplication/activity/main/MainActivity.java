@@ -3,7 +3,6 @@ package com.example.tiantian.myapplication.activity.main;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,12 +13,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tiantian.myapplication.R;
@@ -43,7 +39,6 @@ import com.zjy.simplemodule.utils.AssetUtils;
 import com.zjy.simplemodule.utils.Callback;
 import com.zjy.simplemodule.utils.EnvironmentUtils;
 import com.zjy.simplemodule.utils.SharedPreferencesUtils;
-import com.zjy.simplemodule.utils.ToastUtils;
 
 public class MainActivity extends SimpleBindingActivity<MainViewModel, ActivityMainBinding> {
 
@@ -51,7 +46,6 @@ public class MainActivity extends SimpleBindingActivity<MainViewModel, ActivityM
     private SystemFragment systemFragment;
     private NavigationFragment navigationFragment;
     private ProjectFragment projectFragment;
-    private ImageView headerImage;
     private TextView headerName;
 
     @Override
@@ -90,7 +84,6 @@ public class MainActivity extends SimpleBindingActivity<MainViewModel, ActivityM
         systemFragment = SystemFragment.newInstance();
         navigationFragment = NavigationFragment.newInstance();
         projectFragment = ProjectFragment.newInstance();
-        headerImage = binding.mainNavigation.getHeaderView(0).findViewById(R.id.header_image);
         headerName = binding.mainNavigation.getHeaderView(0).findViewById(R.id.header_name);
     }
 
@@ -132,20 +125,6 @@ public class MainActivity extends SimpleBindingActivity<MainViewModel, ActivityM
                         startActivity(new Intent(getSelf(), CollectActivity.class));
                         break;
                     case R.id.navigation_light:
-                        String path = EnvironmentUtils.getFileDir(getSelf(), Environment.DIRECTORY_DOCUMENTS).getPath();
-                        final String filepath = path + "/skin.apk";
-                        AssetUtils.copyFile(getSelf(), filepath, "skinColor.apk", new Callback<Boolean>() {
-                            @Override
-                            public void onCall(Boolean aBoolean) {
-                                if (aBoolean) {
-                                    Resources resources = getSkinResources(AssetUtils.addAssetPath(filepath));
-                                    PackageInfo info = getPackageManager().getPackageArchiveInfo(filepath, PackageManager.GET_ACTIVITIES);
-                                    int id = resources.getIdentifier("colorA", "color"
-                                            , info.packageName);
-                                    headerName.setTextColor(resources.getColor(id));
-                                }
-                            }
-                        });
                         break;
                     case R.id.navigation_settings:
                         RxAvoid.getInstance()

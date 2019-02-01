@@ -2,15 +2,8 @@ package com.zjy.simplemodule.retrofit;
 
 import android.util.Log;
 
-import com.zjy.simplemodule.interceptor.SyncCookieInterceptor;
-import com.zjy.simplemodule.utils.ActivityManager;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -33,7 +26,7 @@ public class RetrofitUtils {
     }
 
     public <S> S createService(Class<S> sClass) {
-        return createService(sClass, "http://www.wanandroid.com/");
+        return createService(sClass, NetWorkConfig.getBaseUrl());
     }
 
     public <S> S createService(Class<S> sClass, String url) {
@@ -62,13 +55,15 @@ public class RetrofitUtils {
                 }
             });
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            client = new OkHttpClient.Builder()
-                    .writeTimeout(10000, TimeUnit.SECONDS)
-                    .readTimeout(10000, TimeUnit.SECONDS)
-                    .connectTimeout(10000, TimeUnit.SECONDS)
-                    .addInterceptor(interceptor)
-                    .addInterceptor(new SyncCookieInterceptor(ActivityManager.getInstance().getCurrActivity()))
-                    .build();
+            OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                    .writeTimeout(NetWorkConfig.getWriteTimeout(), NetWorkConfig.getTimeoutUnit())
+                    .readTimeout(NetWorkConfig.getReadTimeout(), NetWorkConfig.getTimeoutUnit())
+                    .connectTimeout(NetWorkConfig.getConnectTimeout(), NetWorkConfig.getTimeoutUnit())
+                    .addInterceptor(interceptor);
+            for (Interceptor i : NetWorkConfig.getInterceptors()) {
+                builder.addInterceptor(i);
+            }
+            client = builder.build();
         }
         return client;
     }

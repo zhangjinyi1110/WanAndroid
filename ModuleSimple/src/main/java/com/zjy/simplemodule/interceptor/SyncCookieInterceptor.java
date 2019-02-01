@@ -30,8 +30,8 @@ public class SyncCookieInterceptor implements Interceptor {
         Request request = chain.request();
         List<String> headers;
 //        Boolean flag = DiskCache.with(context).cachePath(Contracts.COOKIE_PATH).getAndClose(Contracts.COOKIE_SYNC);
-        Boolean flag = SharedPreferencesUtils.with(context).getBoolean(Contracts.COOKIE_SYNC);
-        if (flag != null && flag) {
+        boolean flag = SharedPreferencesUtils.with(context).getBoolean(Contracts.COOKIE_SYNC);
+        if (flag) {
             Response response = chain.proceed(request);
             headers = response.headers("Set-Cookie");
 //            DiskCache.with(context).cachePath(Contracts.COOKIE_PATH)
@@ -42,9 +42,6 @@ public class SyncCookieInterceptor implements Interceptor {
         } else {
 //            headers = DiskCache.with(context).cachePath(Contracts.COOKIE_PATH).getAndClose(Contracts.COOKIE_NAME);
             headers = new ArrayList<>(SharedPreferencesUtils.with(context).getStringSet(Contracts.COOKIE_NAME));
-        }
-        if (headers == null) {
-            headers = new ArrayList<>();
         }
         Request.Builder builder = request.newBuilder();
 //        if (headers.size() != 0)

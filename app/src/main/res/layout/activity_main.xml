@@ -14,10 +14,10 @@
         tools:context=".activity.main.MainActivity">
 
         <LinearLayout
+            android:id="@+id/main_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:id="@+id/main_group">
+            android:orientation="vertical">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/main_toolbar"
@@ -32,17 +32,17 @@
                 android:layout_height="match_parent">
 
                 <android.support.design.widget.BottomNavigationView
+                    android:id="@+id/main_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/main_bottom"
                     android:layout_alignParentBottom="true"
                     app:menu="@menu/menu_bottom" />
 
                 <FrameLayout
+                    android:id="@+id/main_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/main_content"
-                    android:layout_above="@id/main_bottom"/>
+                    android:layout_above="@id/main_bottom" />
 
             </RelativeLayout>
 
@@ -54,8 +54,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="@color/colorWhite"
-            app:menu="@menu/menu_navigation"
-            app:headerLayout="@layout/navigation_header"/>
+            app:headerLayout="@layout/navigation_header"
+            app:menu="@menu/menu_navigation" />
 
     </android.support.v4.widget.DrawerLayout>
 </layout>

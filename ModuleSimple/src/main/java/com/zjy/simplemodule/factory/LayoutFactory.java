@@ -29,7 +29,6 @@ public class LayoutFactory implements LayoutInflater.Factory2 {
 
     private View createView(String name, Context context, AttributeSet attrs) {
         View view = null;
-        Log.e(getClass().getSimpleName(), "createView: " + name);
         try {
             if (name.indexOf('.') == -1) {
                 if (name.equals("View")) {
@@ -46,7 +45,7 @@ public class LayoutFactory implements LayoutInflater.Factory2 {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(getClass().getSimpleName(), "createView: " + e.toString());
+            Log.e(getClass().getSimpleName(), "createView: " + name + "/" + e.toString());
         }
         return view;
     }
